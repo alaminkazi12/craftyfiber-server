@@ -40,10 +40,25 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/usercraft/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const cursor = crafts.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.post("/craft", async (req, res) => {
       const newCraft = req.body;
       console.log(newCraft);
       const result = await crafts.insertOne(newCraft);
+      res.send(result);
+    });
+
+    app.delete("/craft/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await crafts.deleteOne(query);
       res.send(result);
     });
 
