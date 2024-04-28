@@ -26,9 +26,16 @@ async function run() {
     await client.connect();
     const database = client.db("craftyfiber");
     const crafts = database.collection("crafts");
+    const categories = database.collection("categories");
 
     app.get("/craft", async (req, res) => {
       const cursor = crafts.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/categories", async (req, res) => {
+      const cursor = categories.find();
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -52,6 +59,28 @@ async function run() {
       const newCraft = req.body;
       console.log(newCraft);
       const result = await crafts.insertOne(newCraft);
+      res.send(result);
+    });
+
+    app.put("/craft/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedCraft = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const Craft = {
+        $set: {
+          image: updatedCraft.image,
+          Item_name: updatedCraft.Item_name,
+          category: updatedCraft.category,
+          price: updatedCraft.price,
+          rating: updatedCraft.rating,
+          customization: updatedCraft.customization,
+          processing_time: updatedCraft.processing_time,
+          stock: updatedCraft.stock,
+          short_description: updatedCraft.short_description,
+        },
+      };
+      const result = await crafts.updateOne(filter, Craft, options);
       res.send(result);
     });
 
