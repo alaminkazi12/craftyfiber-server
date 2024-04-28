@@ -55,6 +55,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/category/:name", async (req, res) => {
+      const name = req.params.name;
+      const query = { category: name };
+      const cursor = crafts.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.post("/craft", async (req, res) => {
       const newCraft = req.body;
       console.log(newCraft);
